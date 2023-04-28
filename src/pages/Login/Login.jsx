@@ -11,16 +11,33 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { login } from "../../services/auth.firebase";
+import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
+import { useNavigate } from "react-router-dom";
 import { Copyright } from "../../components/Copyright/Copyright";
 
 export const Login = () => {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    try {
+      const userCredential = await login(
+        data.get("email"),
+        data.get("password")
+      );
+      const userDoc = await getSpecificDocumentFromCollection(
+        "users",
+        userCredential.user.uid
+      );
+      console.log('userDoc', userDoc);
+      // TODO: SAVE TO LOCAL STORAGE OR REDUX
+      navigate("/discovery");
+    } catch (err) {
+      console.log("error", err);
+    }
   };
 
   return (
@@ -71,7 +88,7 @@ export const Login = () => {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

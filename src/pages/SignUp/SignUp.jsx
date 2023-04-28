@@ -11,16 +11,34 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { signup } from '../../services/auth.firebase';
+import { addDocumentToCollection } from "../../services/user.firebase";
 import { Copyright } from "../../components/Copyright/Copyright";
+import { useNavigate } from "react-router-dom";
 
 export const SignUp = () => {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    console.log('data', data);
+
+    try {
+      const userCredential = await signup(data.get("email"), data.get("password"));
+      const userData = {
+        name: data.get("name"),
+        email: data.get("email"),
+        bookmarks: [],
+        categories: [],
+        sort: [],
+        id: userCredential.user.uid,
+      };
+      await addDocumentToCollection("users", userCredential.user.uid, userData);
+      navigate("/discovery");
+    } catch (err) {
+      console.log('error', err);
+    }
   };
 
   return (
@@ -85,7 +103,7 @@ export const SignUp = () => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
