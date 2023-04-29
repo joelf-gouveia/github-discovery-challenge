@@ -11,33 +11,39 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { signup } from '../../services/auth.firebase';
-import { addDocumentToCollection } from "../../services/user.firebase";
-import { Copyright } from "../../components/Copyright/Copyright";
+import { signup } from "../../services/auth.firebase";
+import {
+  addDocumentToCollection,
+} from "../../services/user.firebase";
+import { Copyright } from "../../components";
 import { useNavigate } from "react-router-dom";
+import { useLocalStorage } from "../../hooks";
 
 export const SignUp = () => {
   const navigate = useNavigate();
+  const [, setValue] = useLocalStorage("users", {});
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log('data', data);
+    console.log("data", data);
 
     try {
-      const userCredential = await signup(data.get("email"), data.get("password"));
+      const userCredential = await signup(
+        data.get("email"),
+        data.get("password")
+      );
       const userData = {
         name: data.get("name"),
         email: data.get("email"),
-        bookmarks: [],
-        categories: [],
-        sort: [],
-        id: userCredential.user.uid,
+        uid: userCredential.user.uid,
+        bookmarks: []
       };
       await addDocumentToCollection("users", userCredential.user.uid, userData);
+      setValue(userData);
       navigate("/discovery");
     } catch (err) {
-      console.log('error', err);
+      console.log("error", err);
     }
   };
 

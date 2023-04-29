@@ -1,12 +1,27 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo,  } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
 import { signout } from "../../services/auth.firebase";
-import { useAuth } from "../../hooks/useAuth";
+import { useLocalStorage } from "../../hooks";
+import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
 
-export const RootLayout = () => {
-  const user = useAuth();
-  const username = useMemo(() => user?.displayName || '', [user])
+const RootLayout = () => {
+  const [user, setUser] = useLocalStorage("users");
+  console.log('users?', user);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const currentUser = getSpecificDocumentFromCollection("users", user.uid);
+
+      if (currentUser.name !== user.name || currentUser.email !== user.email) {
+        setUser({...user, name: currentUser.name, email: currentUser.email})
+      }
+    }
+
+    getUser();
+  }, [user])
+
+  const username = useMemo(() => user.name || '', [user])
 
   const logout = async () => {
     signout();
@@ -36,3 +51,5 @@ export const RootLayout = () => {
     </>
   );
 };
+
+export default RootLayout;

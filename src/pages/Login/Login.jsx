@@ -14,10 +14,12 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { login } from "../../services/auth.firebase";
 import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
 import { useNavigate } from "react-router-dom";
-import { Copyright } from "../../components/Copyright/Copyright";
+import { Copyright } from "../../components";
+import { useLocalStorage } from "../../hooks";
 
 export const Login = () => {
   const navigate = useNavigate();
+  const [, setValue] = useLocalStorage("users", {});
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,8 +34,7 @@ export const Login = () => {
         "users",
         userCredential.user.uid
       );
-      console.log('userDoc', userDoc);
-      // TODO: SAVE TO LOCAL STORAGE OR REDUX
+      setValue({ uid: userDoc.id, name: userDoc.name, email: userDoc.email, bookmarks: userDoc.bookmarks });
       navigate("/discovery");
     } catch (err) {
       console.log("error", err);
