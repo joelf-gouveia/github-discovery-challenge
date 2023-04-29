@@ -3,11 +3,16 @@ import React from "react";
 import { RouterProvider } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { routes } from "./config/routes";
-import { useAuth } from "./hooks/useAuth";
+import { auth } from "./config/firebase";
+import { useLocalStorage } from "./hooks";
 
 function App() {
   const theme = createTheme();
-  const user = useAuth();
+  const [user,] = useLocalStorage("users");
+
+  auth.onAuthStateChanged((user) => {
+    console.log("user", user);
+  });
 
   return (
     <ThemeProvider theme={theme}>
