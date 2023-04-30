@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   auth.onAuthStateChanged((user) => {
-    console.log("USER", user);
     if (!user) {
       logout();
     }

@@ -13,7 +13,6 @@ const subCollection = "preferences";
 const usePreferences = () => {
   const [preferences, setPreferences] = useState([]);
   const { user } = useAuth();
-  console.log("user", user);
 
   useEffect(() => {
     onFetchPreferences();
