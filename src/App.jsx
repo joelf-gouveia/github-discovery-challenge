@@ -1,23 +1,45 @@
 import "./App.css";
 import React from "react";
 import { RouterProvider } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+import { ThemeProvider } from "@mui/material/styles";
+import { lightTheme, darkTheme } from "./theme";
 import { routes } from "./config/routes";
 import { auth } from "./config/firebase";
 import { useLocalStorage } from "./hooks";
+import { signout } from "./services/auth.firebase";
+
+// optional configuration
+const options = {
+  // you can also just use 'bottom center'
+  position: positions.TOP_RIGHT,
+  timeout: 5000,
+  offset: "30px",
+  // you can also just use 'scale'
+  transition: transitions.SCALE,
+};
 
 function App() {
-  const theme = createTheme();
-  const [user,] = useLocalStorage("users");
+  const [selectedTheme,] = useLocalStorage("theme");
+  const [user, setUser] = useLocalStorage("users");
+
+  const isDarkMode = selectedTheme === "dark";
 
   auth.onAuthStateChanged((user) => {
-    console.log("user", user);
+    if (!user) {
+      console.log("APP LOGIN OUT");
+      signout();
+      setUser(null);
+    }
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={routes({ isAllowed: Boolean(user) })} />
-    </ThemeProvider>
+    <AlertProvider template={AlertTemplate} {...options}>
+      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+        <RouterProvider router={routes({ isAllowed: Boolean(user) })} />
+      </ThemeProvider>
+    </AlertProvider>
   );
 }
 

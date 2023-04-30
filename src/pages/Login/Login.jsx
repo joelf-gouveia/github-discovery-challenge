@@ -11,33 +11,54 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { handleFirebaseError } from "../../config/firebase";
 import { login } from "../../services/auth.firebase";
 import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
 import { useNavigate } from "react-router-dom";
 import { Copyright } from "../../components";
 import { useLocalStorage } from "../../hooks";
+import { useAlert } from "react-alert"
+import paths from '../../constants/paths';
+
+const schema = yup.object().shape({
+  email: yup.string().required("Email is required").email("Email is invalid"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
 
 export const Login = () => {
+  const alert = useAlert();
   const navigate = useNavigate();
   const [, setValue] = useLocalStorage("users", {});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
+  const onSubmit = async (data) => {
     try {
-      const userCredential = await login(
-        data.get("email"),
-        data.get("password")
-      );
+      const userCredential = await login(data.email, data.password);
       const userDoc = await getSpecificDocumentFromCollection(
         "users",
         userCredential.user.uid
       );
-      setValue({ uid: userDoc.id, name: userDoc.name, email: userDoc.email, bookmarks: userDoc.bookmarks });
-      navigate("/discovery");
+      setValue({
+        uid: userDoc.id,
+        name: userDoc.name,
+        email: userDoc.email,
+        bookmarks: userDoc.bookmarks,
+      });
+      navigate(paths.Discovery);
     } catch (err) {
-      console.log("error", err);
+      alert.error(handleFirebaseError(err.code))
     }
   };
 
@@ -56,9 +77,14 @@ export const Login = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Login
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
@@ -68,6 +94,9 @@ export const Login = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            {...register("email")}
+            error={errors.email ? true : false}
+            helperText={errors.email ? errors.email.message : null}
           />
           <TextField
             margin="normal"
@@ -78,6 +107,9 @@ export const Login = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            {...register("password")}
+            error={errors.password ? true : false}
+            helperText={errors.password ? errors.password.message : null}
           />
           <Button
             type="submit"

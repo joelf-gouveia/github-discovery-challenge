@@ -8,6 +8,7 @@ import { SignUp } from "../pages/SignUp/SignUp";
 import { Login } from "../pages/Login/Login";
 import { Discovery } from "../pages/Discovery/Discovery";
 import { MyProfile } from "../pages/MyProfile/MyProfile";
+import paths from '../constants/paths';
 import { RootLayout, ErrorPage, ProtectedRoute } from "../components";
 
 export const routes = (props) =>
@@ -22,11 +23,11 @@ export const routes = (props) =>
             </ProtectedRoute>
           }
         >
-          <Route index path="/discovery" element={<Discovery />} />
-          <Route path="/myprofile" element={<MyProfile />} />
+          <Route index path={paths.Discovery} element={<Discovery />} />
+          <Route path={paths.MyProfile} element={<MyProfile />} />
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path={paths.Login} element={<Login />} />
+        <Route path={paths.Signup} element={<SignUp />} />
       </Route>
     )
   );

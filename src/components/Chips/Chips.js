@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Chip } from "@mui/material";
-import "./chips.scss";
+import { Chip, useTheme } from "@mui/material";
 
 const listTopics = ["React", "Django", "Typescript", "AWS"];
 
 const Chips = ({ topics, onClick }) => {
+  const theme = useTheme();
   return listTopics.map((topic, index) => {
     const isSelected = topics.includes(topic);
 
@@ -14,15 +14,23 @@ const Chips = ({ topics, onClick }) => {
         key={index}
         onClick={() => onClick(topic, isSelected)}
         label={topic}
-        className={`chip ${isSelected ? "chipActive" : ""}`}
+        sx={{
+          mr: 2,
+          color: `${isSelected ? "white" : theme.palette.primary.main}`,
+          border: `1px solid ${theme.palette.primary.main}`,
+          backgroundColor: `${isSelected ? theme.palette.primary.main : "transparent"}`,
+          "&:hover": {
+            backgroundColor: theme.palette.tertiary.main
+          }
+        }}
       />
     );
   });
 };
 
 Chips.propTypes = {
-    topics: PropTypes.array,
-    onClick: PropTypes.func
-}
+  topics: PropTypes.array,
+  onClick: PropTypes.func,
+};
 
 export default Chips;

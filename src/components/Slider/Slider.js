@@ -1,9 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
-import {
-  IconButton,
-} from "@mui/material";
-import { Star, StarBorder } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { Star } from "@mui/icons-material";
 import placeholder from "../../assets/download.png";
 
 // Import Swiper React components
@@ -16,18 +14,24 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./slider.scss";
 
-const Slider = ({ cache, savedBookmarks, onBookmarkChange }) => {
+const Slider = ({ cache, savedBookmarks, onBookmarkChange, onLoadMore }) => {
+  const swiperRef = useRef(null);
+
+  const onReachEnd = () => {
+    onLoadMore();
+  };
+
   return (
     <Swiper
+      ref={swiperRef}
       slidesPerView={1}
       spaceBetween={10}
-      loop={true}
       breakpoints={{
         600: {
           slidesPerView: 2,
         },
-        800:{
-          slidesPerView: 3
+        800: {
+          slidesPerView: 3,
         },
         1200: {
           slidesPerView: 4,
@@ -41,34 +45,38 @@ const Slider = ({ cache, savedBookmarks, onBookmarkChange }) => {
       navigation={true}
       modules={[Navigation]}
       className="customSwiper"
+      onReachEnd={onReachEnd}
     >
       {cache.map((card) => {
-        const isBookmarked = Boolean(savedBookmarks.find(bks => bks.id === card.id));
-        
+        const isBookmarked = Boolean(
+          savedBookmarks.find((bks) => bks.id === card.id)
+        );
+
         return (
-        <SwiperSlide key={card.id}>
-          <>
-            <IconButton
-              className="star"
-              size="large"
-              onClick={() => onBookmarkChange(card, isBookmarked)}
-            >
-              {isBookmarked ? (
-                <Star className="gold" fontSize="large" />
-              ) : (
-                <StarBorder className="grey" fontSize="large" />
-              )}
-            </IconButton>
-            <a href={card.html_url} target="_blank" rel="noopener noreferrer">
-              <img
-                src={card.image_url}
-                className="imageContainer"
-                onError={(e) => (e.target.src = placeholder)}
-              />
-            </a>
-          </>
-        </SwiperSlide>
-      )})}
+          <SwiperSlide key={card.id} className="customSwiperSlide">
+            <>
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "5%",
+                  right: "2%",
+                  backgroundColor: "tertiary.main",
+                }}
+                onClick={() => onBookmarkChange(card, isBookmarked)}
+              >
+                <Star className={isBookmarked ? "gold" : "grey"} />
+              </IconButton>
+              <a href={card.html_url} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={card.image_url}
+                  className="imageContainer"
+                  onError={(e) => (e.target.src = placeholder)}
+                />
+              </a>
+            </>
+          </SwiperSlide>
+        );
+      })}
     </Swiper>
   );
 };
@@ -83,6 +91,7 @@ Slider.propTypes = {
   handleOptionSelect: PropTypes.func,
   savedBookmarks: PropTypes.array,
   onBookmarkChange: PropTypes.func,
+  onLoadMore: PropTypes.func,
 };
 
 export default Slider;

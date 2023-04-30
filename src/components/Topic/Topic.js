@@ -15,8 +15,10 @@ const orderBySelection = [
 const Topic = ({
   title,
   cache,
+  onFetch,
   preference,
   showOrderBy,
+  shouldLoadMore,
   handleOptionSelect,
   ...props
 }) => {
@@ -35,21 +37,26 @@ const Topic = ({
     handleOptionSelect(option, topic);
   };
 
+  const onLoadMore = () => {
+    shouldLoadMore && onFetch(preference.topic, preference.orderBy, true);
+  }
+
   const selectedOrder =
     showOrderBy && orderBySelection.find((obs) => obs.value === preference.orderBy);
 
   return (
     <div className="sliderMainContainer">
       <div className="header">
-        <Typography variant="h6" sx={{ ml: 5 }}>
+        <Typography variant="h6">
           {title}
         </Typography>
         {showOrderBy && (
           <>
             <Button
-              className="button"
               endIcon={<ArrowDropDown />}
               onClick={handleClick}
+              color="secondary"
+              sx={{ ml: 2 }}
             >
               {selectedOrder.label}
             </Button>
@@ -79,19 +86,22 @@ const Topic = ({
           </>
         )}
       </div>
-      <Slider cache={cache} {...props} />
+      <Slider cache={cache} onLoadMore={onLoadMore} {...props} />
     </div>
   );
 };
 
 Topic.defaultProps = {
-    showOrderBy: true
+    showOrderBy: true,
+    shouldLoadMore: true
 }
 
 Topic.propTypes = {
-  title: PropTypes.string,
-  showOrderBy: PropTypes.bool,
   cache: PropTypes.array,
+  title: PropTypes.string,
+  onFetch: PropTypes.func,
+  showOrderBy: PropTypes.bool,
+  shouldLoadMore: PropTypes.bool,
   preference: PropTypes.object,
   handleOptionSelect: PropTypes.func
 };

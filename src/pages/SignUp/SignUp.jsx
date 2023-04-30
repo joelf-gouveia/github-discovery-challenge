@@ -11,39 +11,53 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { signup } from "../../services/auth.firebase";
-import {
-  addDocumentToCollection,
-} from "../../services/user.firebase";
+import { addDocumentToCollection } from "../../services/user.firebase";
 import { Copyright } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "../../hooks";
+import { handleFirebaseError } from "../../config/firebase";
+import { useAlert } from "react-alert";
+import paths from '../../constants/paths';
+
+const schema = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  email: yup.string().required("Email is required").email("Email is invalid"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+});
 
 export const SignUp = () => {
+  const alert = useAlert();
   const navigate = useNavigate();
   const [, setValue] = useLocalStorage("users", {});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log("data", data);
-
+  const onSubmit = async (data) => {
     try {
-      const userCredential = await signup(
-        data.get("email"),
-        data.get("password")
-      );
+      const userCredential = await signup(data.email, data.password);
       const userData = {
-        name: data.get("name"),
-        email: data.get("email"),
+        name: data.name,
+        email: data.email,
         uid: userCredential.user.uid,
-        bookmarks: []
+        bookmarks: [],
       };
       await addDocumentToCollection("users", userCredential.user.uid, userData);
       setValue(userData);
-      navigate("/discovery");
+      navigate(paths.Discovery);
     } catch (err) {
-      console.log("error", err);
+      alert.error(handleFirebaseError(err.code))
     }
   };
 
@@ -64,17 +78,24 @@ export const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
                 autoComplete="given-name"
-                name="name"
                 required
                 fullWidth
                 id="name"
                 label="Name"
                 autoFocus
+                {...register("name")}
+                error={errors.name ? true : false}
+                helperText={errors.name ? errors.name.message : null}
               />
             </Grid>
             <Grid item xs={12}>
@@ -85,6 +106,9 @@ export const SignUp = () => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                {...register("email")}
+                error={errors.email ? true : false}
+                helperText={errors.email ? errors.email.message : null}
               />
             </Grid>
             <Grid item xs={12}>
@@ -96,6 +120,9 @@ export const SignUp = () => {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                {...register("password")}
+                error={errors.password ? true : false}
+                helperText={errors.password ? errors.password.message : null}
               />
             </Grid>
           </Grid>

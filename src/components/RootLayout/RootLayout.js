@@ -1,30 +1,21 @@
-import React, { useEffect, useMemo,  } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import React from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
 import { signout } from "../../services/auth.firebase";
 import { useLocalStorage } from "../../hooks";
-import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
+import { GitHub } from "@mui/icons-material";
+import paths from "../../constants/paths";
 
 const RootLayout = () => {
   const [user, setUser] = useLocalStorage("users");
-  console.log('users?', user);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const currentUser = getSpecificDocumentFromCollection("users", user.uid);
-
-      if (currentUser.name !== user.name || currentUser.email !== user.email) {
-        setUser({...user, name: currentUser.name, email: currentUser.email})
-      }
-    }
-
-    getUser();
-  }, [user])
-
-  const username = useMemo(() => user.name || '', [user])
-
-  const logout = async () => {
+  const logout = () => {
+    console.log("LOGIN OUT");
     signout();
+    setUser(null);
+    navigate(paths.Login);
   };
 
   return (
@@ -32,13 +23,33 @@ const RootLayout = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Box sx={{ flexGrow: 1 }}>
-              <Button component={NavLink} to="/discovery" color="inherit">
+            <Box sx={{ flexGrow: 1, alignItems: "center", display: "flex" }}>
+              <GitHub size="large" sx={{ mr: 5, ml: 2 }} />
+              <Button
+                component={NavLink}
+                to={paths.Discovery}
+                sx={{
+                  color:
+                    pathname === paths.Discovery
+                    ? "secondary.dark"
+                    : "tertiary.main",
+                }}
+                color="inherit"
+              >
                 Discovery
               </Button>
             </Box>
-            <Button component={NavLink} to="/myprofile" color="inherit">
-              {username}
+            <Button
+              component={NavLink}
+              to={paths.MyProfile}
+              sx={{
+                color:
+                  pathname === paths.MyProfile
+                    ? "secondary.dark"
+                    : "tertiary.main",
+              }}
+            >
+              {user.name}
             </Button>
             <Button variant="body" color="inherit" onClick={logout}>
               Logout
