@@ -1,22 +1,13 @@
 import React from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Box, AppBar, Toolbar, Button } from "@mui/material";
-import { signout } from "../../services/auth.firebase";
-import { useLocalStorage } from "../../hooks";
 import { GitHub } from "@mui/icons-material";
+import { useAuth } from "../../hooks/AuthProvider";
 import paths from "../../constants/paths";
 
 const RootLayout = () => {
-  const [user, setUser] = useLocalStorage("users");
-  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const { pathname } = useLocation();
-
-  const logout = () => {
-    console.log("LOGIN OUT");
-    signout();
-    setUser(null);
-    navigate(paths.Login);
-  };
 
   return (
     <>

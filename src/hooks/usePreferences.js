@@ -5,14 +5,15 @@ import {
   getAllDocumentsFromSubcollection,
   updateDocumentInSubcollection,
 } from "../services/user.firebase";
-import { useLocalStorage } from "./";
+import { useAuth } from "./AuthProvider";
 
 const collection = "users";
 const subCollection = "preferences";
 
 const usePreferences = () => {
   const [preferences, setPreferences] = useState([]);
-  const [user] = useLocalStorage("users");
+  const { user } = useAuth();
+  console.log("user", user);
 
   useEffect(() => {
     onFetchPreferences();

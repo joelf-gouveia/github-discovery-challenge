@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useLocalStorage, usePreferences } from "../../hooks";
+import { usePreferences } from "../../hooks";
 import { Grid, Typography } from "@mui/material";
 import { Chips, Topic } from "../../components";
+import { useAuth } from "../../hooks/AuthProvider";
 import uuid from "react-uuid";
 import {
   getRepositories,
   DEFAULT_PER_PAGE,
 } from "../../services/github.service";
 import { updateSpecificDocumentInCollection } from "../../services/user.firebase";
-import { signout } from "../../services/auth.firebase";
-import { useNavigate } from "react-router-dom";
-import paths from '../../constants/paths';
 import "./discovery.scss";
 
 export const Discovery = () => {
-  const [user] = useLocalStorage("users");
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const {
     preferences,
@@ -31,12 +28,6 @@ export const Discovery = () => {
   }, []);
 
   useEffect(() => {
-    console.log("user", user, !user);
-    if (!user) {
-      signout();
-      navigate(paths.Login);
-    }
-
     const { bookmarks } = user;
     setSavedBookmarks(bookmarks);
   }, [user]);
@@ -75,14 +66,14 @@ export const Discovery = () => {
       if (!isLoadingMore) {
         setCache((prevState) => ({ ...prevState, [topic]: repos }));
       } else {
-        const newRepos = [ ...cache[topic], ...repos ]
+        const newRepos = [...cache[topic], ...repos];
         setCache((prevState) => ({
           ...prevState,
           [topic]: newRepos,
         }));
       }
     } catch (err) {
-      alert.error("There was an issue fetching repositories")
+      alert.error("There was an issue fetching repositories");
     }
   };
 

@@ -18,10 +18,10 @@ import { signup } from "../../services/auth.firebase";
 import { addDocumentToCollection } from "../../services/user.firebase";
 import { Copyright } from "../../components";
 import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "../../hooks";
 import { handleFirebaseError } from "../../config/firebase";
 import { useAlert } from "react-alert";
 import paths from '../../constants/paths';
+import { useAuth } from "../../hooks/AuthProvider";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -35,7 +35,7 @@ const schema = yup.object().shape({
 export const SignUp = () => {
   const alert = useAlert();
   const navigate = useNavigate();
-  const [, setValue] = useLocalStorage("users", {});
+  const { signin } = useAuth();
   const {
     register,
     handleSubmit,
@@ -54,7 +54,7 @@ export const SignUp = () => {
         bookmarks: [],
       };
       await addDocumentToCollection("users", userCredential.user.uid, userData);
-      setValue(userData);
+      signin(userData);
       navigate(paths.Discovery);
     } catch (err) {
       alert.error(handleFirebaseError(err.code))
