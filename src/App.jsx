@@ -22,8 +22,6 @@ function App() {
   const [selectedTheme,] = useLocalStorage("theme", "light");
   const isDarkMode = selectedTheme === "dark";
 
-  console.log("HERE");
-
   return (
     <AlertProvider template={AlertTemplate} {...options}>
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
