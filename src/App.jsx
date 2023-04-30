@@ -6,9 +6,7 @@ import AlertTemplate from "react-alert-template-basic";
 import { ThemeProvider } from "@mui/material/styles";
 import { lightTheme, darkTheme } from "./theme";
 import { routes } from "./config/routes";
-import { auth } from "./config/firebase";
 import { useLocalStorage } from "./hooks";
-import { signout } from "./services/auth.firebase";
 
 // optional configuration
 const options = {
@@ -21,23 +19,15 @@ const options = {
 };
 
 function App() {
-  const [selectedTheme,] = useLocalStorage("theme");
-  const [user, setUser] = useLocalStorage("users");
-
+  const [selectedTheme,] = useLocalStorage("theme", "light");
   const isDarkMode = selectedTheme === "dark";
 
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      console.log("APP LOGIN OUT");
-      signout();
-      setUser(null);
-    }
-  });
+  console.log("HERE");
 
   return (
     <AlertProvider template={AlertTemplate} {...options}>
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-        <RouterProvider router={routes({ isAllowed: Boolean(user) })} />
+        <RouterProvider router={routes} />
       </ThemeProvider>
     </AlertProvider>
   );

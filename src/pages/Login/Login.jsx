@@ -19,9 +19,9 @@ import { login } from "../../services/auth.firebase";
 import { getSpecificDocumentFromCollection } from "../../services/user.firebase";
 import { useNavigate } from "react-router-dom";
 import { Copyright } from "../../components";
-import { useLocalStorage } from "../../hooks";
 import { useAlert } from "react-alert"
 import paths from '../../constants/paths';
+import { useAuth } from "../../hooks/AuthProvider";
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required").email("Email is invalid"),
@@ -32,9 +32,9 @@ const schema = yup.object().shape({
 });
 
 export const Login = () => {
+  const { signin } = useAuth();
   const alert = useAlert();
   const navigate = useNavigate();
-  const [, setValue] = useLocalStorage("users", {});
   const {
     register,
     handleSubmit,
@@ -50,7 +50,7 @@ export const Login = () => {
         "users",
         userCredential.user.uid
       );
-      setValue({
+      signin({
         uid: userDoc.id,
         name: userDoc.name,
         email: userDoc.email,

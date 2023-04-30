@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocalStorage } from "../../hooks";
 import {
   Container,
   Box,
@@ -15,6 +14,7 @@ import * as yup from "yup";
 import { handleFirebaseError } from "../../config/firebase";
 import { updateSpecificDocumentInCollection } from "../../services/user.firebase";
 import { useAlert } from "react-alert";
+import { useAuth } from "../../hooks/AuthProvider";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -23,7 +23,7 @@ const schema = yup.object().shape({
 
 export const MyProfile = () => {
   const alert = useAlert();
-  const [user, setUser] = useLocalStorage("users");
+  const { user, setUser } = useAuth();
   const defaultValues = { name: user.name, email: user.email };
   const {
     register,
