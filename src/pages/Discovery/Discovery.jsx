@@ -3,11 +3,19 @@ import { useLocalStorage, usePreferences } from "../../hooks";
 import { Grid, Typography } from "@mui/material";
 import { Chips, Topic } from "../../components";
 import uuid from "react-uuid";
-import { getRepositories } from "../../services/github.service";
+import {
+  getRepositories,
+  DEFAULT_PER_PAGE,
+} from "../../services/github.service";
 import { updateSpecificDocumentInCollection } from "../../services/user.firebase";
+import { signout } from "../../services/auth.firebase";
+import { useNavigate } from "react-router-dom";
+import paths from '../../constants/paths';
+import "./discovery.scss";
 
 export const Discovery = () => {
   const [user] = useLocalStorage("users");
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const {
     preferences,
@@ -23,8 +31,13 @@ export const Discovery = () => {
   }, []);
 
   useEffect(() => {
+    console.log("user", user, !user);
+    if (!user) {
+      signout();
+      navigate(paths.Login);
+    }
+
     const { bookmarks } = user;
-    console.log("user", user);
     setSavedBookmarks(bookmarks);
   }, [user]);
 
@@ -38,22 +51,38 @@ export const Discovery = () => {
     });
   }, [preferences]);
 
-  const onFetch = async (topic, orderBy) => {
+  const parseRepo = (items) =>
+    items.map((item) => {
+      return {
+        id: item.id,
+        html_url: item.html_url,
+        image_url: `https://opengraph.githubassets.com/1a/${item.full_name}`,
+      };
+    });
+
+  const onFetch = async (topic, orderBy, isLoadingMore = false) => {
     try {
-      const response = await getRepositories(topic, orderBy);
+      const response = isLoadingMore
+        ? await getRepositories(
+            topic,
+            orderBy,
+            DEFAULT_PER_PAGE,
+            cache[topic].length / DEFAULT_PER_PAGE + 1 // To get the page number.
+          )
+        : await getRepositories(topic, orderBy);
       const items = response.data.items;
-
-      const repos = items.map((item) => {
-        return {
-          id: item.id,
-          html_url: item.html_url,
-          image_url: `https://opengraph.githubassets.com/1a/${item.full_name}`,
-        };
-      });
-
-      setCache((prevState) => ({ ...prevState, [topic]: repos }));
+      const repos = parseRepo(items);
+      if (!isLoadingMore) {
+        setCache((prevState) => ({ ...prevState, [topic]: repos }));
+      } else {
+        const newRepos = [ ...cache[topic], ...repos ]
+        setCache((prevState) => ({
+          ...prevState,
+          [topic]: newRepos,
+        }));
+      }
     } catch (err) {
-      console.log("error", err);
+      alert.error("There was an issue fetching repositories")
     }
   };
 
@@ -90,18 +119,20 @@ export const Discovery = () => {
   const topics = preferences.map((pf) => pf.topic);
 
   return (
-    <Grid container>
+    <Grid container className="mainContainer">
       {loading && <div>Loading</div>}
       {!loading && (
         <>
           <Topic
-            title={`New Bookmarks (${savedBookmarks.length})`}
+            title={`My Bookmarks (${savedBookmarks.length})`}
+            showOrderBy={false}
+            shouldLoadMore={false}
+            onFetch={onFetch}
             cache={savedBookmarks}
             savedBookmarks={savedBookmarks}
             onBookmarkChange={onBookmarkChange}
-            showOrderBy={false}
           />
-          <Grid item sx={{ p: 2, ml: 3 }}>
+          <Grid item className="titleContainer">
             <Typography variant="subtitle1">Toggle topics to show</Typography>
             <Chips topics={topics} onClick={onTopicChange} />
           </Grid>
@@ -112,6 +143,7 @@ export const Discovery = () => {
               return (
                 <Topic
                   key={topic}
+                  onFetch={onFetch}
                   title={`Top ${topic}`}
                   cache={cache[topic]}
                   preference={preference}
