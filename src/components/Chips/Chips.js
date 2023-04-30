@@ -19,9 +19,6 @@ const Chips = ({ topics, onClick }) => {
           color: `${isSelected ? "white" : theme.palette.primary.main}`,
           border: `1px solid ${theme.palette.primary.main}`,
           backgroundColor: `${isSelected ? theme.palette.primary.main : "transparent"}`,
-          "&:hover": {
-            backgroundColor: theme.palette.tertiary.main
-          }
         }}
       />
     );
