@@ -21,7 +21,6 @@ const usePreferences = () => {
   }, [user.uid]);
 
   const onAddPreferences = async (newPreferences) => {
-    console.log('adding', collection, user.uid, subCollection, newPreferences.id, newPreferences);
     await addDocumentToSubcollection(
         collection,
         user.uid,

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button, MenuItem, Popover, Typography } from "@mui/material";
+import { Button, MenuItem, Popover, Typography, Box } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
-import { Slider } from '../';
+import { NoData, Slider } from '../';
 import "./topic.scss";
 
 const orderBySelection = [
@@ -15,6 +15,7 @@ const orderBySelection = [
 const Topic = ({
   title,
   cache,
+  noData,
   onFetch,
   preference,
   showOrderBy,
@@ -45,9 +46,9 @@ const Topic = ({
     showOrderBy && orderBySelection.find((obs) => obs.value === preference.orderBy);
 
   return (
-    <div className="sliderMainContainer">
+    <Box sx={{ display: "flex", flexDirection: "column", width: "100%", padding: "15px 0" }}>
       <div className="header">
-        <Typography variant="h6">
+        <Typography variant="h6" fontWeight="bold">
           {title}
         </Typography>
         {showOrderBy && (
@@ -86,19 +87,22 @@ const Topic = ({
           </>
         )}
       </div>
+      {!cache.length && <Box>{noData}</Box>}
       <Slider cache={cache} onLoadMore={onLoadMore} {...props} />
-    </div>
+    </Box>
   );
 };
 
 Topic.defaultProps = {
-    showOrderBy: true,
-    shouldLoadMore: true
+  showOrderBy: true,
+  shouldLoadMore: true,
+  noData: <NoData title="Nothing to show"/>
 }
 
 Topic.propTypes = {
   cache: PropTypes.array,
   title: PropTypes.string,
+  noData: PropTypes.any,
   onFetch: PropTypes.func,
   showOrderBy: PropTypes.bool,
   shouldLoadMore: PropTypes.bool,
