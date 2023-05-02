@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { usePreferences } from "../../hooks";
-import { Grid, Typography } from "@mui/material";
-import { Chips, Topic } from "../../components";
+import { Grid, Typography, Box } from "@mui/material";
+import { Chips, Topic, NoData } from "../../components";
 import { useAuth } from "../../hooks/AuthProvider";
 import uuid from "react-uuid";
 import {
@@ -110,12 +110,13 @@ export const Discovery = () => {
   const topics = preferences.map((pf) => pf.topic);
 
   return (
-    <Grid container className="mainContainer">
+    <Box sx={{ flexGrow: 1, padding: "20px" }}>
       {loading && <div>Loading</div>}
       {!loading && (
         <>
           <Topic
             title={`My Bookmarks (${savedBookmarks.length})`}
+            noData={<NoData title="No bookmarks found" />}
             showOrderBy={false}
             shouldLoadMore={false}
             onFetch={onFetch}
@@ -147,6 +148,6 @@ export const Discovery = () => {
           })}
         </>
       )}
-    </Grid>
+    </Box>
   );
 };

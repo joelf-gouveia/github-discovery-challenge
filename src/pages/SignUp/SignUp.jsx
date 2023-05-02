@@ -54,7 +54,7 @@ export const SignUp = () => {
         bookmarks: [],
       };
       await addDocumentToCollection("users", userCredential.user.uid, userData);
-      signin(userData);
+      await signin(userData);
       navigate(paths.Discovery);
     } catch (err) {
       alert.error(handleFirebaseError(err.code))

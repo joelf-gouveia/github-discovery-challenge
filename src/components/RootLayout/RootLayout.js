@@ -1,18 +1,22 @@
 import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Box, AppBar, Toolbar, Button } from "@mui/material";
-import { GitHub } from "@mui/icons-material";
+import { Box, AppBar, Toolbar, Button, IconButton } from "@mui/material";
+import { useLocalStorage } from "../../hooks";
+import { GitHub, Brightness7, Brightness4 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/AuthProvider";
 import paths from "../../constants/paths";
 
 const RootLayout = () => {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const [selectedTheme, setSelectedTheme] = useLocalStorage("theme");
+
+  const setTheme = () => setSelectedTheme(selectedTheme === "dark" ? "light" : "dark")
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+      <Box>
+        <AppBar position="static" sx={{ backgroundColor: "primary.main" }}>
           <Toolbar>
             <Box sx={{ flexGrow: 1, alignItems: "center", display: "flex" }}>
               <GitHub size="large" sx={{ mr: 5, ml: 2 }} />
@@ -22,14 +26,17 @@ const RootLayout = () => {
                 sx={{
                   color:
                     pathname === paths.Discovery
-                    ? "secondary.dark"
-                    : "tertiary.main",
+                      ? "secondary.dark"
+                      : "tertiary.main",
                 }}
                 color="inherit"
               >
                 Discovery
               </Button>
             </Box>
+            <IconButton sx={{ ml: 1 }} onClick={() => setTheme()} color="inherit">
+              {selectedTheme === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            </IconButton>
             <Button
               component={NavLink}
               to={paths.MyProfile}
