@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./";
-import { auth } from "../config/firebase";
 import paths from "../constants/paths";
 import { signout } from '../services/auth.firebase';
 const AuthContext = createContext();
@@ -24,12 +23,6 @@ export const AuthProvider = ({ children }) => {
     signout();
     navigate(paths.Login, { replace: true });
   };
-
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      logout();
-    }
-  });
 
   const value = useMemo(
     () => ({
