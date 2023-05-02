@@ -50,8 +50,8 @@ export const Login = () => {
         "users",
         userCredential.user.uid
       );
-      signin({
-        uid: userDoc.id,
+      await signin({
+        uid: userCredential.user.uid,
         name: userDoc.name,
         email: userDoc.email,
         bookmarks: userDoc.bookmarks,
