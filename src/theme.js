@@ -10,7 +10,7 @@ const githubColors = {
     success: "#28a745",
     warning: "#ffd33d",
     info: "#0366d6",
-    danger: "#cb2431",
+    error: "#cb2431",
   },
   bookmarks: {
     gold: "#ffd700",
@@ -38,7 +38,7 @@ const lightTheme = createTheme({
       success: githubColors.alert.success,
       warning: githubColors.alert.warning,
       info: githubColors.alert.info,
-      error: githubColors.alert.danger,
+      error: githubColors.alert.error,
     },
   },
 });

@@ -1213,6 +1213,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@blaumaus/react-alert@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@blaumaus/react-alert/-/react-alert-7.0.5.tgz#06ac006252cebffad862cdb884f77ce4ce8724ed"
+  integrity sha512-zJ8I9iamdgbrj5MhNYL3K0RNYRbmZIDdHGPjlMjsTnHyQb+mP7YSjypc5TBbwnuKHP5ChiOF3hMHuWfkXcjQ/Q==
+  dependencies:
+    prop-types "^15.7.2"
+    react-transition-group "^4.4.1"
+
 "@csstools/normalize.css@*":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-12.0.0.tgz#a9583a75c3f150667771f30b60d9f059473e62c4"
@@ -8974,19 +8982,6 @@ raw-body@2.5.1:
     http-errors "2.0.0"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
-
-react-alert-template-basic@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-alert-template-basic/-/react-alert-template-basic-1.0.2.tgz#db82a6b2604344b3a1aedfb1f61eac108d259620"
-  integrity sha512-nJSIknM5xN/GzKdKkb5/X9zdiLxSqctww3mEouyeR891nUGP8guqFpCGD8vCjFYSZtq8z3tGcAKBG1XjtLHFHQ==
-
-react-alert@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/react-alert/-/react-alert-7.0.3.tgz#4d47f539c574e1118a84409a077f3a58d161e23b"
-  integrity sha512-cZ2ZhxytECTxljDfBKpQmwWbfJQFzFf2Qf03L/IB5shbEXtWhDD2JjiW60rwmKT1oZoU+GEnUQw5MFM5+f0B6A==
-  dependencies:
-    prop-types "^15.7.2"
-    react-transition-group "^4.4.1"
 
 react-app-polyfill@^3.0.0:
   version "3.0.0"

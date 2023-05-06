@@ -4,7 +4,7 @@ import { Login } from "./Login";
 
 /* eslint-disable */
 // Mock the react-alert module
-jest.mock("react-alert", () => ({
+jest.mock("@blaumaus/react-alert", () => ({
   useAlert: () => ({
     error: jest.fn(),
   }),

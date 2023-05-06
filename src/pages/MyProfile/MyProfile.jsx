@@ -13,7 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { handleFirebaseError } from "../../config/firebase";
 import { updateSpecificDocumentInCollection } from "../../services/user.firebase";
-import { useAlert } from "react-alert";
+import { useAlert } from "@blaumaus/react-alert";
 import { useAuth } from "../../hooks/AuthProvider";
 
 const schema = yup.object().shape({

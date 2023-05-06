@@ -1,3 +1,4 @@
+import AlertTemplate from './AlertTemplate/AlertTemplate';
 import AuthLayout from './AuthLayout/AuthLayout';
 import Chips from './Chips/Chips';
 import Copyright from './Copyright/Copyright';
@@ -9,6 +10,7 @@ import Slider from './Slider/Slider';
 import Topic from './Topic/Topic';
 
 export {
+    AlertTemplate,
     AuthLayout,
     Chips,
     Copyright,

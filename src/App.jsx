@@ -1,12 +1,12 @@
 import "./App.css";
 import React from "react";
 import { RouterProvider } from "react-router-dom";
-import { transitions, positions, Provider as AlertProvider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
+import { transitions, positions, Provider as AlertProvider } from "@blaumaus/react-alert";
 import { ThemeProvider } from "@mui/material/styles";
 import { lightTheme, darkTheme } from "./theme";
 import { routes } from "./config/routes";
 import { useLocalStorage } from "./hooks";
+import { AlertTemplate } from "./components";
 
 // optional configuration
 const options = {
@@ -19,15 +19,15 @@ const options = {
 };
 
 function App() {
-  const [selectedTheme,] = useLocalStorage("theme", "light");
+  const [selectedTheme] = useLocalStorage("theme", "light");
   const isDarkMode = selectedTheme === "dark";
 
   return (
-    <AlertProvider template={AlertTemplate} {...options}>
-      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <AlertProvider template={AlertTemplate} {...options}>
         <RouterProvider router={routes} />
-      </ThemeProvider>
-    </AlertProvider>
+      </AlertProvider>
+    </ThemeProvider>
   );
 }
 
