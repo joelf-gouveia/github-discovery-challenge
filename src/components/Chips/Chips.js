@@ -16,7 +16,7 @@ const Chips = ({ topics, onClick }) => {
         label={topic}
         sx={{
           mr: 2,
-          color: `${isSelected ? "white" : theme.palette.primary.main}`,
+          color: `${isSelected ? "tertiary.main" : "primary.main"}`,
           border: `1px solid ${theme.palette.primary.main}`,
           backgroundColor: `${isSelected ? theme.palette.primary.main : "transparent"}`,
         }}

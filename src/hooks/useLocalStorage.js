@@ -14,6 +14,7 @@ const useLocalStorage = (key, initialValue) => {
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // If error also return initialValue
+      alert.error("Something went wrong");
       console.log(error);
       return initialValue;
     }
@@ -32,7 +33,7 @@ const useLocalStorage = (key, initialValue) => {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
-      // A more advanced implementation would handle the error case
+      alert.error("Something went wrong");
       console.log(error);
     }
   };

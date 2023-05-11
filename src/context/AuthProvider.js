@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "./";
+import { useLocalStorage } from "../hooks";
 import paths from "../constants/paths";
 import { signout } from '../services/auth.firebase';
 const AuthContext = createContext();
@@ -24,17 +24,7 @@ export const AuthProvider = ({ children }) => {
     navigate(paths.Login, { replace: true });
   };
 
-  const value = useMemo(
-    () => ({
-      user,
-      signin,
-      logout,
-      setUser,
-    }),
-    [user]
-  );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, setUser, signin, logout}}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {

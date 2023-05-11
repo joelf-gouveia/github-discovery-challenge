@@ -48,7 +48,7 @@ const Topic = ({
   return (
     <Box sx={{ display: "flex", flexDirection: "column", width: "100%", padding: "15px 0" }}>
       <div className="header">
-        <Typography variant="h6" fontWeight="bold">
+        <Typography variant="h6" fontWeight="bold" color="primary.main">
           {title}
         </Typography>
         {showOrderBy && (
