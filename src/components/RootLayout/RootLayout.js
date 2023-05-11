@@ -2,21 +2,20 @@ import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Box, AppBar, Toolbar, Button, IconButton } from "@mui/material";
 import { GitHub, Brightness7, Brightness4 } from "@mui/icons-material";
-import { useAuth } from "../../hooks/AuthProvider";
-import { usePreferences } from "../../context/Preferences";
+import { useAuth } from "../../context/AuthProvider";
+import { useInternalTheme } from "../../context/InternalTheme";
 import paths from "../../constants/paths";
 
 const RootLayout = () => {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
-  const { preferences, setPreferences } = usePreferences();
+  const { internalTheme, setInternalTheme } = useInternalTheme();
 
   const changeTheme = () => {
-    const currentTheme = preferences.mode;
 
-    let mode = currentTheme === "dark" ? "light" : "dark";
+    let mode = internalTheme === "dark" ? "light" : "dark";
 
-    setPreferences({ mode });
+    setInternalTheme(mode);
   }
 
   return (
@@ -41,7 +40,7 @@ const RootLayout = () => {
               </Button>
             </Box>
             <IconButton sx={{ ml: 1, color: "tertiary.main" }} onClick={changeTheme}>
-              {preferences.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+              {internalTheme.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
             <Button
               component={NavLink}

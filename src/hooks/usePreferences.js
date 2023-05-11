@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import {
-    addDocumentToSubcollection,
+  addDocumentToSubcollection,
   deleteSpecificDocumentFromSubcollection,
   getAllDocumentsFromSubcollection,
   updateDocumentInSubcollection,
 } from "../services/user.firebase";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "../context/AuthProvider";
 
 const collection = "users";
 const subCollection = "preferences";
@@ -22,14 +22,14 @@ const usePreferences = () => {
 
   const onAddPreferences = async (newPreferences) => {
     await addDocumentToSubcollection(
-        collection,
-        user.uid,
-        subCollection,
-        newPreferences.id,
-        newPreferences
+      collection,
+      user.uid,
+      subCollection,
+      newPreferences.id,
+      newPreferences
     );
 
-    setPreferences([ ...preferences, newPreferences ]);
+    setPreferences([...preferences, newPreferences]);
   }
 
   const onFetchPreferences = async () => {

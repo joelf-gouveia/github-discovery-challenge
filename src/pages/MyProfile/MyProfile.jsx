@@ -14,7 +14,7 @@ import * as yup from "yup";
 import { handleFirebaseError } from "../../config/firebase";
 import { updateSpecificDocumentInCollection } from "../../services/user.firebase";
 import { useAlert } from "@blaumaus/react-alert";
-import { useAuth } from "../../hooks/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),

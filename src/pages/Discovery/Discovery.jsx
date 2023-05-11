@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { usePreferences } from "../../hooks";
 import { Grid, Typography, Box } from "@mui/material";
 import { Chips, Topic, NoData } from "../../components";
-import { useAuth } from "../../hooks/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 import uuid from "react-uuid";
 import {
   getRepositories,
@@ -41,7 +41,7 @@ export const Discovery = () => {
       return {
         id: item.id,
         html_url: item.html_url,
-        image_url: `https://opengraph.githubassets.com/1a/${item.full_name}`,
+        image_url: `${process.env.REACT_APP_OPEN_GRAPH_LINK}${item.full_name}`,
       };
     });
 
@@ -99,7 +99,6 @@ export const Discovery = () => {
       bks = [...bookmarks, repository];
     }
 
-    console.log(user, bks);
     updateSpecificDocumentInCollection("users", user.uid, { bookmarks: bks });
     setUser({ ...user, bookmarks: bks })
   };

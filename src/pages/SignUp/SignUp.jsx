@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { handleFirebaseError } from "../../config/firebase";
 import { useAlert } from "@blaumaus/react-alert";
 import paths from '../../constants/paths';
-import { useAuth } from "../../hooks/AuthProvider";
+import { useAuth } from "../../context/AuthProvider";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),

@@ -5,7 +5,7 @@ import { transitions, positions, Provider as AlertProvider } from "@blaumaus/rea
 import { ThemeProvider } from "@mui/material/styles";
 import { routes } from "./config/routes";
 import { AlertTemplate } from "./components";
-import { PreferencesProvider, usePreferences } from "./context/Preferences";
+import { InternalThemeProvider, useInternalTheme } from "./context/InternalTheme";
 import { darkTheme, lightTheme } from "./theme";
 
 // optional configuration
@@ -19,9 +19,8 @@ const options = {
 };
 
 const Base = () => {
-  const { preferences } = usePreferences()
-  const mode = preferences.mode;
-  const theme = mode === "dark" ? darkTheme : lightTheme
+  const { internalTheme } = useInternalTheme()
+  const theme = internalTheme === "dark" ? darkTheme : lightTheme
 
   return (
     <ThemeProvider theme={theme}>
@@ -34,9 +33,9 @@ const Base = () => {
 
 function App() {
   return (
-    <PreferencesProvider>
+    <InternalThemeProvider>
       <Base />
-    </PreferencesProvider>
+    </InternalThemeProvider>
   );
 }
 
