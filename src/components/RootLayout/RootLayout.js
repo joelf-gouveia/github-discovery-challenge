@@ -1,17 +1,23 @@
 import React from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Box, AppBar, Toolbar, Button, IconButton } from "@mui/material";
-import { useLocalStorage } from "../../hooks";
 import { GitHub, Brightness7, Brightness4 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/AuthProvider";
+import { usePreferences } from "../../context/Preferences";
 import paths from "../../constants/paths";
 
 const RootLayout = () => {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
-  const [selectedTheme, setSelectedTheme] = useLocalStorage("theme");
+  const { preferences, setPreferences } = usePreferences();
 
-  const setTheme = () => setSelectedTheme(selectedTheme === "dark" ? "light" : "dark")
+  const changeTheme = () => {
+    const currentTheme = preferences.mode;
+
+    let mode = currentTheme === "dark" ? "light" : "dark";
+
+    setPreferences({ mode });
+  }
 
   return (
     <>
@@ -34,8 +40,8 @@ const RootLayout = () => {
                 Discovery
               </Button>
             </Box>
-            <IconButton sx={{ ml: 1 }} onClick={() => setTheme()} color="inherit">
-              {selectedTheme === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            <IconButton sx={{ ml: 1, color: "tertiary.main" }} onClick={changeTheme}>
+              {preferences.mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
             <Button
               component={NavLink}
@@ -49,7 +55,7 @@ const RootLayout = () => {
             >
               {user.name}
             </Button>
-            <Button variant="body" color="inherit" onClick={logout}>
+            <Button variant="body" onClick={logout} sx={{ color: "tertiary.main" }}>
               Logout
             </Button>
           </Toolbar>

@@ -3,10 +3,10 @@ import React from "react";
 import { RouterProvider } from "react-router-dom";
 import { transitions, positions, Provider as AlertProvider } from "@blaumaus/react-alert";
 import { ThemeProvider } from "@mui/material/styles";
-import { lightTheme, darkTheme } from "./theme";
 import { routes } from "./config/routes";
-import { useLocalStorage } from "./hooks";
 import { AlertTemplate } from "./components";
+import { PreferencesProvider, usePreferences } from "./context/Preferences";
+import { darkTheme, lightTheme } from "./theme";
 
 // optional configuration
 const options = {
@@ -18,16 +18,25 @@ const options = {
   transition: transitions.SCALE,
 };
 
-function App() {
-  const [selectedTheme] = useLocalStorage("theme", "light");
-  const isDarkMode = selectedTheme === "dark";
+const Base = () => {
+  const { preferences } = usePreferences()
+  const mode = preferences.mode;
+  const theme = mode === "dark" ? darkTheme : lightTheme
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme}>
       <AlertProvider template={AlertTemplate} {...options}>
         <RouterProvider router={routes} />
       </AlertProvider>
     </ThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <PreferencesProvider>
+      <Base />
+    </PreferencesProvider>
   );
 }
 
